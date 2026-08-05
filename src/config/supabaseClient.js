@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const ws = require('ws');
 require('dotenv').config();
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -13,6 +14,7 @@ if (!supabaseUrl || !supabaseServiceKey) {
 // Service-role client for server-side use only (bypasses RLS — never expose this key to the frontend).
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: { autoRefreshToken: false, persistSession: false },
+  realtime: { transport: ws },
 });
 
 module.exports = { supabaseAdmin };
