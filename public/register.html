@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee Registration — Ambo University Attendance System</title>
+<style>
+  body {
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: #f4f5f7;
+    margin: 0;
+    padding: 40px 16px;
+    color: #1a1a1a;
+  }
+  .card {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 32px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  h1 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  p.subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-top: 16px;
+  }
+  input, select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid #d0d0d5;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 24px;
+    width: 100%;
+    padding: 11px;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  #status {
+    margin-top: 16px;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 6px;
+    display: none;
+  }
+  #status.success {
+    display: block;
+    background: #e6f6ec;
+    color: #1a7f37;
+  }
+  #status.error {
+    display: block;
+    background: #fdecea;
+    color: #c0392b;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Employee Registration</h1>
+  <p class="subtitle">Ambo University Attendance System — test/demo signup form</p>
+
+  <form id="registerForm">
+    <label for="full_name">Full name</label>
+    <input type="text" id="full_name" required />
+
+    <label for="employee_id_number">Employee ID number</label>
+    <input type="text" id="employee_id_number" required />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" required />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" minlength="6" required />
+
+    <label for="department_id">Department</label>
+    <select id="department_id" required>
+      <option value="">Loading departments…</option>
+    </select>
+
+    <label for="position_id">Position (optional)</label>
+    <select id="position_id">
+      <option value="">— none —</option>
+    </select>
+
+    <label for="hire_date">Hire date</label>
+    <input type="date" id="hire_date" required />
+
+    <label for="phone">Phone (optional)</label>
+    <input type="text" id="phone" />
+
+    <button type="submit" id="submitBtn">Register Employee</button>
+  </form>
+
+  <div id="status"></div>
+</div>
+
+<script>
+  const API_BASE = 'http://localhost:4000';
+
+  async function loadOptions() {
+    try {
+      const [deptRes, posRes] = await Promise.all([
+        fetch(`${API_BASE}/api/public/departments`),
+        fetch(`${API_BASE}/api/public/positions`),
+      ]);
+      const departments = await deptRes.json();
+      const positions = await posRes.json();
+
+      const deptSelect = document.getElementById('department_id');
+      deptSelect.innerHTML = '<option value="">Select a department</option>';
+      departments.forEach((d) => {
+        const label = d.colleges ? `${d.name} (${d.colleges.name})` : d.name;
+        deptSelect.innerHTML += `<option value="${d.id}">${label}</option>`;
+      });
+      if (departments.length === 0) {
+        deptSelect.innerHTML = '<option value="">No departments found — add one in Supabase first</option>';
+      }
+
+      const posSelect = document.getElementById('position_id');
+      positions.forEach((p) => {
+        posSelect.innerHTML += `<option value="${p.id}">${p.title}</option>`;
+      });
+    } catch (err) {
+      showStatus('Could not load departments/positions. Is the backend running on port 4000?', 'error');
+    }
+  }
+
+  function showStatus(message, type) {
+    const el = document.getElementById('status');
+    el.textContent = message;
+    el.className = type;
+  }
+
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Registering…';
+
+    const payload = {
+      full_name: document.getElementById('full_name').value,
+      employee_id_number: document.getElementById('employee_id_number').value,
+      email: document.getElementById('email').value,
+      password: document.getElementById('password').value,
+      department_id: document.getElementById('department_id').value,
+      position_id: document.getElementById('position_id').value || null,
+      hire_date: document.getElementById('hire_date').value,
+      phone: document.getElementById('phone').value || null,
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/api/public/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const result = await res.json();
+
+      if (!res.ok) {
+        showStatus(result.error || 'Registration failed', 'error');
+      } else {
+        showStatus(`Success! ${payload.full_name} was registered.`, 'success');
+        document.getElementById('registerForm').reset();
+      }
+    } catch (err) {
+      showStatus('Network error — check the backend is running.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Register Employee';
+    }
+  });
+
+  loadOptions();
+</script>
+
+</body>
+</html>
