@@ -14,13 +14,24 @@ router.get('/me', requireAuth, async (req, res) => {
   res.json(data);
 });
 
-// POST /api/attendance/check-in - log a check-in (HR/admin or trusted device integration)
-router.post('/check-in', requireAuth, requireRole('hr', 'admin'), async (req, res) => {
-  const { employee_id, method = 'manual' } = req.body;
-  if (!employee_id) return res.status(400).json({ error: 'employee_id is required' });
+// POST /api/attendance/check-in - employee checks themselves in
+router.post('/check-in', requireAuth, async (req, res) => {
+  const employee_id = req.user.id;
+  const method = 'manual';
 
   const today = new Date().toISOString().slice(0, 10);
   const now = new Date().toISOString();
+
+  const { data: existing } = await supabaseAdmin
+    .from('attendance_records')
+    .select('id, check_in_time')
+    .eq('employee_id', employee_id)
+    .eq('date', today)
+    .single();
+
+  if (existing && existing.check_in_time) {
+    return res.status(400).json({ error: 'Already checked in today' });
+  }
 
   const { data, error } = await supabaseAdmin
     .from('attendance_records')
@@ -31,7 +42,7 @@ router.post('/check-in', requireAuth, requireRole('hr', 'admin'), async (req, re
         check_in_time: now,
         status: 'present',
         method,
-        marked_by: req.user.id,
+        marked_by: employee_id,
       },
       { onConflict: 'employee_id,date' }
     )
@@ -39,14 +50,12 @@ router.post('/check-in', requireAuth, requireRole('hr', 'admin'), async (req, re
     .single();
 
   if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+  res.status(201).json(data);
 });
 
-// POST /api/attendance/check-out - log a check-out for today's attendance record
-router.post('/check-out', requireAuth, requireRole('hr', 'admin'), async (req, res) => {
-  const { employee_id } = req.body;
-  if (!employee_id) return res.status(400).json({ error: 'employee_id is required' });
-
+// POST /api/attendance/check-out - employee checks themselves out
+router.post('/check-out', requireAuth, async (req, res) => {
+  const employee_id = req.user.id;
   const today = new Date().toISOString().slice(0, 10);
   const now = new Date().toISOString();
 
@@ -95,7 +104,6 @@ router.get('/department/:departmentId', requireAuth, async (req, res) => {
     return res.status(403).json({ error: 'Insufficient permissions' });
   }
 
-  // If they're only a department_head (not hr/admin), confirm it's THEIR department
   if (!isHrOrAdmin && isDepartmentHead) {
     const { data: dept, error: deptError } = await supabaseAdmin
       .from('departments')
@@ -114,7 +122,7 @@ router.get('/department/:departmentId', requireAuth, async (req, res) => {
 
   const { data, error } = await supabaseAdmin
     .from('attendance_records')
-    .select('*, employees!attendance_records_employee_id_fkey(id, full_name, department_id)')
+    .select('*, employees!inner!attendance_records_employee_id_fkey(id, full_name, department_id)')
     .eq('employees.department_id', departmentId)
     .order('date', { ascending: false });
 
@@ -122,24 +130,29 @@ router.get('/department/:departmentId', requireAuth, async (req, res) => {
   res.json(data);
 });
 
-
-// GET /api/attendance/reports/monthly?year=2026&month=8 - monthly attendance summary per employee
+// GET /api/attendance/reports/monthly?year=2026&month=8&department_id=... - monthly attendance summary per employee
 router.get('/reports/monthly', requireAuth, requireRole('hr', 'admin'), async (req, res) => {
-  const { year, month } = req.query;
+  const { year, month, department_id } = req.query;
 
   if (!year || !month) {
     return res.status(400).json({ error: 'year and month query params are required (e.g. ?year=2026&month=8)' });
   }
 
   const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-  const endDateObj = new Date(year, month, 0); // day 0 of next month = last day of this month
+  const endDateObj = new Date(year, month, 0);
   const endDate = endDateObj.toISOString().slice(0, 10);
 
-  const { data: records, error } = await supabaseAdmin
+  let query = supabaseAdmin
     .from('attendance_records')
-    .select('employee_id, status, employees!attendance_records_employee_id_fkey(full_name)')
+    .select('employee_id, status, employees!inner!attendance_records_employee_id_fkey(full_name, department_id)')
     .gte('date', startDate)
     .lte('date', endDate);
+
+  if (department_id) {
+    query = query.eq('employees.department_id', department_id);
+  }
+
+  const { data: records, error } = await query;
 
   if (error) return res.status(500).json({ error: error.message });
 
@@ -168,6 +181,7 @@ router.get('/reports/monthly', requireAuth, requireRole('hr', 'admin'), async (r
   res.json({
     year: Number(year),
     month: Number(month),
+    department_id: department_id || null,
     employees: Object.values(summary),
   });
 });

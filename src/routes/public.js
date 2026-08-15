@@ -19,6 +19,13 @@ router.get('/positions', async (req, res) => {
   res.json(data);
 });
 
+// GET /api/public/leave-types - list leave types for the leave request form dropdown
+router.get('/leave-types', async (req, res) => {
+  const { data, error } = await supabaseAdmin.from('leave_types').select('id, name').order('name');
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
 // POST /api/public/register - create a login user + employee record in one step
 // NOTE: this is for local testing/demo purposes (seeding test data via a form).
 // In a real deployment, employee creation should be restricted to HR/admin (see src/routes/employees.js).

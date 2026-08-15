@@ -3,9 +3,16 @@ const router = express.Router();
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { supabaseAdmin } = require('../config/supabaseClient');
 
-// GET /api/employees - list employees (HR/admin only)
+// GET /api/employees - list employees (HR/admin only), optional filters
 router.get('/', requireAuth, requireRole('hr', 'admin'), async (req, res) => {
-  const { data, error } = await supabaseAdmin.from('employees').select('*');
+  const { department_id, position_id } = req.query;
+
+  let query = supabaseAdmin.from('employees').select('*');
+
+  if (department_id) query = query.eq('department_id', department_id);
+  if (position_id) query = query.eq('position_id', position_id);
+
+  const { data, error } = await query;
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
@@ -115,6 +122,17 @@ router.delete('/:id', requireAuth, requireRole('hr', 'admin'), async (req, res) 
 
   if (error) return res.status(500).json({ error: error.message });
   res.json({ message: 'Employee deactivated', employee: data });
+});
+
+// GET /api/employees/me/roles - roles assigned to the current logged-in user
+router.get('/me/roles', requireAuth, async (req, res) => {
+  const { data, error } = await supabaseAdmin
+    .from('user_roles')
+    .select('role')
+    .eq('employee_id', req.user.id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ roles: (data || []).map((r) => r.role) });
 });
 
 module.exports = router;
