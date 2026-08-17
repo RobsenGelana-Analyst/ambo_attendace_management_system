@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Register Employee - Ambo Attendance</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dashboard">
+
+  <div class="mobile-topbar">
+    <button id="hamburgerBtn" class="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <img src="../image/logo.jpg" alt="Ambo University" class="mobile-logo">
+  </div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../image/logo.jpg" alt="Ambo University">
+      <span>Ambo University<br>Admin</span>
+    </div>
+    <nav>
+      <a href="admin.html">Employees</a>
+      <a href="admin-department.html">Department Attendance</a>
+      <a href="admin-reports.html">Monthly Reports</a>
+      <a href="admin-leave.html">Leave Requests</a>
+      <a href="admin-register.html" class="active">Register Employee</a>
+    </nav>
+    <div class="user-box">
+      <div class="name" id="userName"></div>
+      <button id="logoutBtn" class="logout">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Register Employee</h1>
+
+    <div class="section">
+      <form id="registerForm">
+        <div class="form-row">
+          <div class="field">
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" required />
+          </div>
+          <div class="field">
+            <label for="employeeIdNumber">Employee ID number</label>
+            <input type="text" id="employeeIdNumber" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" required />
+          </div>
+          <div class="field">
+            <label for="password">Temporary password</label>
+            <input type="password" id="password" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="department">Department</label>
+            <select id="department" required></select>
+          </div>
+          <div class="field">
+            <label for="position">Position</label>
+            <select id="position"></select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="employmentType">Employment type</label>
+            <select id="employmentType">
+              <option value="full_time">Full time</option>
+              <option value="part_time">Part time</option>
+              <option value="contract">Contract</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="hireDate">Hire date</label>
+            <input type="date" id="hireDate" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone (optional)</label>
+          <input type="text" id="phone" />
+        </div>
+
+        <button type="submit">Register Employee</button>
+      </form>
+      <p id="registerMsg"></p>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/admin-register.js"></script>
+</body>
+</html>

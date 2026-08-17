@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Attendance History - Ambo Attendance</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dashboard">
+  <div class="mobile-topbar">
+  <button id="hamburgerBtn" class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <img src="../image/logo.jpg" alt="Ambo University" class="mobile-logo">
+</div>
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../image/logo.jpg" alt="Ambo University">
+      <span>Ambo University<br>Attendance</span>
+    </div>
+    <nav>
+      <a href="dashboard.html">Today's Attendance</a>
+      <a href="history.html" class="active">Attendance History</a>
+      <a href="leave.html">Request Leave</a>
+      <a href="my-requests.html">My Leave Requests</a>
+    </nav>
+    <div class="user-box">
+      <div class="name" id="userName"></div>
+      <button id="logoutBtn" class="logout">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Attendance History</h1>
+    <div class="section">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Status</th></tr>
+        </thead>
+        <tbody id="attendanceTable"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/history.js"></script>
+</body>
+</html>

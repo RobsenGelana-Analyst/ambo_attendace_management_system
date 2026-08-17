@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Employees - Ambo Attendance</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dashboard">
+
+  <div class="mobile-topbar">
+    <button id="hamburgerBtn" class="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <img src="../image/logo.jpg" alt="Ambo University" class="mobile-logo">
+  </div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../image/logo.jpg" alt="Ambo University">
+      <span>Ambo University<br>Admin</span>
+    </div>
+    <nav>
+      <a href="admin.html" class="active">Employees</a>
+      <a href="admin-department.html">Department Attendance</a>
+      <a href="admin-reports.html">Monthly Reports</a>
+      <a href="admin-leave.html">Leave Requests</a>
+      <a href="admin-register.html">Register Employee</a>
+    </nav>
+    <div class="user-box">
+      <div class="name" id="userName"></div>
+      <button id="logoutBtn" class="logout">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Employees</h1>
+
+    <div class="section">
+      <div class="form-row">
+        <div class="field">
+          <label for="empDeptFilter">Department</label>
+          <select id="empDeptFilter">
+            <option value="">All departments</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="empPositionFilter">Position</label>
+          <select id="empPositionFilter">
+            <option value="">All positions</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Department</th><th>Position</th><th>Employment</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="employeeTable"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
