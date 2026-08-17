@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Leave Requests - Ambo Attendance</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dashboard">
+
+  <div class="mobile-topbar">
+    <button id="hamburgerBtn" class="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <img src="../image/logo.jpg" alt="Ambo University" class="mobile-logo">
+  </div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../image/logo.jpg" alt="Ambo University">
+      <span>Ambo University<br>Admin</span>
+    </div>
+    <nav>
+      <a href="admin.html">Employees</a>
+      <a href="admin-department.html">Department Attendance</a>
+      <a href="admin-reports.html">Monthly Reports</a>
+      <a href="admin-leave.html" class="active">Leave Requests</a>
+      <a href="admin-register.html">Register Employee</a>
+    </nav>
+    <div class="user-box">
+      <div class="name" id="userName"></div>
+      <button id="logoutBtn" class="logout">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Leave Requests</h1>
+    <div class="section">
+  <div class="form-row">
+    <div class="field">
+      <label for="leaveDeptFilter">Department</label>
+      <select id="leaveDeptFilter">
+        <option value="">All departments</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="leaveStatusFilter">Status</label>
+      <select id="leaveStatusFilter">
+        <option value="">All statuses</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+  </div>
+</div>
+    <div class="section">
+      <table>
+        <thead>
+          <tr><th>Employee</th><th>Type</th><th>Start</th><th>End</th><th>Reason</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="leaveTable"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/admin-leave.js"></script>
+</body>
+</html>

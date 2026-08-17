@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Department Head - Ambo Attendance</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dashboard">
+
+  <div class="mobile-topbar">
+    <button id="hamburgerBtn" class="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <img src="../image/logo.jpg" alt="Ambo University" class="mobile-logo">
+  </div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../image/logo.jpg" alt="Ambo University">
+      <span>Ambo University<br>Dept. Head</span>
+    </div>
+    <nav>
+      <a href="head.html" class="active">My Department</a>
+    </nav>
+    <div class="user-box">
+      <div class="name" id="userName"></div>
+      <button id="logoutBtn" class="logout">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">My Department</h1>
+
+    <div class="section">
+      <h3>Department Attendance</h3>
+      <table>
+        <thead>
+          <tr><th>Employee</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Status</th></tr>
+        </thead>
+        <tbody id="deptAttendanceTable"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>Leave Requests</h3>
+      <table>
+        <thead>
+          <tr><th>Employee</th><th>Type</th><th>Start</th><th>End</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="deptLeaveTable"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/head.js"></script>
+</body>
+</html>
