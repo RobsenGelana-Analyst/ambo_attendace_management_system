@@ -124,6 +124,57 @@ router.delete('/:id', requireAuth, requireRole('hr', 'admin'), async (req, res) 
   res.json({ message: 'Employee deactivated', employee: data });
 });
 
+// PATCH /api/employees/:id/assign-head/:departmentId - make this employee head of a department
+router.patch('/:id/assign-head/:departmentId', requireAuth, requireRole('hr', 'admin'), async (req, res) => {
+  const { id, departmentId } = req.params;
+
+  const { data: employee, error: empError } = await supabaseAdmin
+    .from('employees')
+    .select('id, full_name')
+    .eq('id', id)
+    .single();
+  if (empError || !employee) return res.status(404).json({ error: 'Employee not found' });
+
+  const { data: dept, error: deptError } = await supabaseAdmin
+    .from('departments')
+    .update({ head_employee_id: id })
+    .eq('id', departmentId)
+    .select()
+    .single();
+  if (deptError) return res.status(500).json({ error: deptError.message });
+
+  const { data: existingRole } = await supabaseAdmin
+    .from('user_roles')
+    .select('role')
+    .eq('employee_id', id)
+    .eq('role', 'department_head')
+    .single();
+
+  if (!existingRole) {
+    await supabaseAdmin.from('user_roles').insert({ employee_id: id, role: 'department_head' });
+  }
+
+  res.json({ message: `${employee.full_name} is now head of this department`, department: dept });
+});
+
+// PATCH /api/employees/:id/unassign-head/:departmentId - remove head-of-department status
+router.patch('/:id/unassign-head/:departmentId', requireAuth, requireRole('hr', 'admin'), async (req, res) => {
+  const { id, departmentId } = req.params;
+
+  const { data: dept, error } = await supabaseAdmin
+    .from('departments')
+    .update({ head_employee_id: null })
+    .eq('id', departmentId)
+    .eq('head_employee_id', id)
+    .select()
+    .single();
+
+  if (error) return res.status(500).json({ error: error.message });
+  if (!dept) return res.status(404).json({ error: 'This employee is not the head of that department' });
+
+  res.json({ message: 'Department head unassigned', department: dept });
+});
+
 // GET /api/employees/me/roles - roles assigned to the current logged-in user
 router.get('/me/roles', requireAuth, async (req, res) => {
   const { data, error } = await supabaseAdmin
