@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Monthly Reports - Ambo Attendance</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dashboard">
+
+  <div class="mobile-topbar">
+    <button id="hamburgerBtn" class="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <img src="../image/logo.jpg" alt="Ambo University" class="mobile-logo">
+  </div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../image/logo.jpg" alt="Ambo University">
+      <span>Ambo University<br>Admin</span>
+    </div>
+    <nav>
+      <a href="admin.html">Employees</a>
+      <a href="admin-department.html">Department Attendance</a>
+      <a href="admin-reports.html" class="active">Monthly Reports</a>
+      <a href="admin-leave.html">Leave Requests</a>
+      <a href="admin-register.html">Register Employee</a>
+    </nav>
+    <div class="user-box">
+      <div class="name" id="userName"></div>
+      <button id="logoutBtn" class="logout">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Monthly Reports</h1>
+
+    <div class="section">
+      <div class="form-row">
+        <div class="field">
+          <label for="reportYear">Year</label>
+          <input type="number" id="reportYear" value="2026" min="2020" max="2100" />
+        </div>
+        <div class="field">
+          <label for="reportMonth">Month</label>
+          <select id="reportMonth">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8" selected>August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="reportDepartment">Department</label>
+          <select id="reportDepartment">
+            <option value="">All departments</option>
+          </select>
+        </div>
+      </div>
+      <button id="loadReportBtn" style="width:auto; padding: 0.6rem 1.4rem;">Load Report</button>
+    </div>
+
+    <div class="section">
+      <table>
+        <thead>
+          <tr><th>Employee</th><th>Present</th><th>Late</th><th>Absent</th><th>On Leave</th></tr>
+        </thead>
+        <tbody id="reportTable"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/admin-reports.js"></script>
+</body>
+</html>

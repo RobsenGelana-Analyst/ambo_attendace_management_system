@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Request Leave - Ambo Attendance</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dashboard">
+  <div class="mobile-topbar">
+  <button id="hamburgerBtn" class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <img src="../image/logo.jpg" alt="Ambo University" class="mobile-logo">
+</div>
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../image/logo.jpg" alt="Ambo University">
+      <span>Ambo University<br>Attendance</span>
+    </div>
+    <nav>
+      <a href="../pages/dashboard.html">Today's Attendance</a>
+      <a href="../pages/history.html">Attendance History</a>
+      <a href="../pages/leave.html" class="active">Request Leave</a>
+      <a href="../pages/my-requests.html">My Leave Requests</a>
+    </nav>
+    <div class="user-box">
+      <div class="name" id="userName"></div>
+      <button id="logoutBtn" class="logout">Log Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Request Leave</h1>
+    <div class="section">
+      <form id="leaveForm">
+        <select id="leaveType" required></select>
+        <div class="form-row">
+  <div class="field">
+    <label for="startDate">Start date</label>
+    <input type="date" id="startDate" required />
+  </div>
+  <div class="field">
+    <label for="endDate">End date</label>
+    <input type="date" id="endDate" required />
+  </div>
+</div>
+        <textarea id="reason" placeholder="Reason (optional)"></textarea>
+        <button type="submit">Submit Request</button>
+      </form>
+      <p id="leaveMsg"></p>
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="../js/leave.js"></script>
+</body>
+</html>
